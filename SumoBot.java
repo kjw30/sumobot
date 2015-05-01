@@ -34,7 +34,30 @@ public class SumoBot
         pilot.setTravelSpeed(INIT_SPEED);
         pilot.setRotateSpeed(INIT_ROTATION_SPEED);
         
-        Behavior[] behaviors = {new BehaviorSearch(pilot, ultraSensor)};
+        // I added this -rhe
+        LightSensor myLightSensor = new LightSensor(SensorPort.S1);
+        
+        System.out.println("About to start SumoBot.java");
+        Button.waitForAnyPress();
+
+        // now calibrate the light sensor
+
+        LCD.clear();
+        LCD.drawString("set on DARK surface", 0, 0);
+        Button.waitForAnyPress();
+        myLightSensor.calibrateLow();
+        LCD.drawString("calibd LOW", 0, 1);
+        Button.waitForAnyPress();
+
+        LCD.clear();
+        LCD.drawString("set on LIGHT surface", 0, 0);
+        Button.waitForAnyPress();
+        myLightSensor.calibrateHigh();
+        LCD.drawString("calibd HI", 0, 1);
+        Button.waitForAnyPress();
+        
+        Behavior[] behaviors = {new BehaviorLightSensor(robot, myLightSensor),
+                                new BehaviorSearch(pilot, ultraSensor)};
         
         Arbitrator arbi = new Arbitrator(behaviors);
         arbi.start();
